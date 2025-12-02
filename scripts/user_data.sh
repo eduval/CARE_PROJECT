@@ -7,8 +7,6 @@ set -e
 DB_NAME="wordpress"
 DB_USER="wpuser"
 DB_PASS="101395Jimin!"
-REPO_OWNER="eduval"
-REPO_NAME="CARE_PROJECT"
 BACKUP_DIR="/tmp/wp_backup"
 
 # -------------------------
@@ -19,6 +17,15 @@ apt install -y apache2 mysql-server php php-mysql php-xml php-mbstring php-curl 
 
 systemctl enable mysql
 systemctl start mysql
+
+# -------------------------
+# Update PHP upload limits for Apache
+# -------------------------
+PHP_INI="/etc/php/8.3/apache2/php.ini"
+sudo sed -i 's/upload_max_filesize = .*/upload_max_filesize = 64M/' $PHP_INI
+sudo sed -i 's/post_max_size = .*/post_max_size = 64M/' $PHP_INI
+sudo sed -i 's/memory_limit = .*/memory_limit = 256M/' $PHP_INI
+sudo sed -i 's/max_execution_time = .*/max_execution_time = 300/' $PHP_INI
 
 # -------------------------
 # Configure MySQL
@@ -37,13 +44,13 @@ FLUSH PRIVILEGES;
 MYSQL_SCRIPT
 
 # -------------------------
-# Download backup
+# Download backup from external server
 # -------------------------
 mkdir -p "$BACKUP_DIR"
 cd "$BACKUP_DIR"
 
-curl -L -o wordpress_files.tar.gz "https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/wordpress_files.tar.gz"
-curl -L -o wordpress_db.sql "https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/wordpress_db.sql"
+curl -L -o wordpress_files.tar.gz "https://ited.org.ec/care/wordpress_files.tar.gz"
+curl -L -o wordpress_db.sql "https://ited.org.ec/care/wordpress_db.sql"
 
 # -------------------------
 # Restore database
@@ -68,6 +75,10 @@ sudo bash -c "cat <<EOF >> /var/www/html/wp-config.php
 
 define('WP_HOME','http://${PUBLIC_IP}');
 define('WP_SITEURL','http://${PUBLIC_IP}');
+@ini_set('upload_max_size' , '64M' );
+@ini_set('post_max_size','64M');
+@ini_set('memory_limit','256M');
+@ini_set('max_execution_time','300');
 EOF"
 
 # -------------------------

@@ -92,7 +92,7 @@ sudo mv wp-cli.phar /usr/local/bin/wp
 # Update old URLs in DB (replace old IP with new public IP)
 # -------------------------
 cd /var/www/html
-wp search-replace 'http://18.205.104.233' "http://${PUBLIC_IP}" --all-tables --allow-root
+wp search-replace 'http://44.223.45.199/' "http://${PUBLIC_IP}" --all-tables --allow-root
 
 # -------------------------
 # Set permissions

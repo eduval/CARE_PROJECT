@@ -3,6 +3,7 @@ set -e
 
 # -------------------------
 # Configurations
+# The EC2 instance must be of type t3.medium and run Ubuntu as the operating system.
 # -------------------------
 DB_NAME="wordpress"
 DB_USER="wpuser"
